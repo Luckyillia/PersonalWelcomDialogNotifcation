@@ -25,33 +25,47 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        Button akcja = findViewById(R.id.akcja);
+        NotificationHelper.creatNotificationChannels(this);
+        Button btn = findViewById(R.id.akcja);
         EditText editText = findViewById(R.id.editTextName);
 
-        akcja.setOnClickListener((v)->{
+        btn.setOnClickListener((v) -> {
             String name = editText.getText().toString().trim();
-            if(name == null){
-                showAlertDialog("Błąd","Proszę wpisać swoje imię!", "OK");
+            System.out.println(name);
+            if (name.isEmpty()) {
+                showAlertDialog("Błąd", "Proszę wpisać swoje imię!", "OK","NO","","");
                 return;
             }
-            showAlertDialog();
+            NotificationHelper.sendNotification(2,
+                    2,
+                    this,
+                    "Witaj!",
+                    "Miło Cię widzieć, "+name+"!",
+                    1,0);
+            showAlertDialog("Potwierdzenie","Cześć "+name+"! Czy chcesz otrzymać powiadomienie powitalne?","Tak, poproszę","Nie, dziękuję","Powiadomienie zostało wysłane!", "Rozumiem. Nie wysyłam powiadomienia.");
         });
     }
-    private void showAlertDialog(String title,String text, String toastText){
+
+    private void showAlertDialog(String title, String text,String btnPositiveText, String btnNegativeText, String toastPositiveText, String toastNegativeText) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle(title);
         builder.setMessage(text);
 
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(btnPositiveText, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(MainActivity.this,toastText,Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, toastPositiveText, Toast.LENGTH_LONG).show();
 
             }
         });
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(btnNegativeText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(MainActivity.this, toastNegativeText, Toast.LENGTH_LONG).show();
 
+            }
         });
+        builder.create().show();
+    }
 }
