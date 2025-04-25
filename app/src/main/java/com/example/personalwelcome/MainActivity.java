@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -33,20 +34,14 @@ public class MainActivity extends AppCompatActivity {
             String name = editText.getText().toString().trim();
             System.out.println(name);
             if (name.isEmpty()) {
-                showAlertDialog("Błąd", "Proszę wpisać swoje imię!", "OK","NO","","");
+                showAlertDialog("Błąd", "Proszę wpisać swoje imię!", "OK", "NO", "", "","",this);
                 return;
             }
-            NotificationHelper.sendNotification(2,
-                    2,
-                    this,
-                    "Witaj!",
-                    "Miło Cię widzieć, "+name+"!",
-                    1,0);
-            showAlertDialog("Potwierdzenie","Cześć "+name+"! Czy chcesz otrzymać powiadomienie powitalne?","Tak, poproszę","Nie, dziękuję","Powiadomienie zostało wysłane!", "Rozumiem. Nie wysyłam powiadomienia.");
+            showAlertDialog("Potwierdzenie","Cześć "+name+"! Czy chcesz otrzymać powiadomienie powitalne?","Tak, poproszę","Nie, dziękuję","Powiadomienie zostało wysłane!", "Rozumiem. Nie wysyłam powiadomienia.",name, this);
         });
     }
 
-    private void showAlertDialog(String title, String text,String btnPositiveText, String btnNegativeText, String toastPositiveText, String toastNegativeText) {
+    private void showAlertDialog(String title, String text, String btnPositiveText, String btnNegativeText, String toastPositiveText, String toastNegativeText, String name, AppCompatActivity activity) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle(title);
@@ -56,7 +51,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Toast.makeText(MainActivity.this, toastPositiveText, Toast.LENGTH_LONG).show();
-
+                if(!toastPositiveText.isEmpty()){
+                    NotificationHelper.sendNotification(2,
+                            2,
+                            activity,
+                            "Witaj!",
+                            "Miło Cię widzieć, "+name+"!",
+                            1,0);
+                }
             }
         });
         builder.setNegativeButton(btnNegativeText, new DialogInterface.OnClickListener() {
